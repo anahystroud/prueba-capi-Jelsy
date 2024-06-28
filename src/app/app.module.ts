@@ -5,16 +5,24 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { AddEditContactComponent } from './components/add-edit-contact/add-edit-contact.component';
+import { ListContactsComponent } from './components/list-contacts/list-contacts.component';
+import { MsgConfComponent } from './components/shared/msg-conf/msg-conf.component';
+import { AngularMaterialModule } from './components/shared/angular-material/angular-material.module';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AddEditContactComponent,
+    ListContactsComponent,
+    MsgConfComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MatSlideToggleModule,
+    AngularMaterialModule
   ],
   providers: [
     provideClientHydration(),
