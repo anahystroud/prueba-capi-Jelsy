@@ -11,18 +11,27 @@ import { MsgConfComponent } from './components/shared/msg-conf/msg-conf.componen
 import { AngularMaterialModule } from './components/shared/angular-material/angular-material.module';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
+import { ReactiveFormsModule } from '@angular/forms';
+import { DetailedViewComponent } from './components/detailed-view/detailed-view.component';
+
+import { HttpClientModule } from '@angular/common/http';
+
+
 @NgModule({
   declarations: [
     AppComponent,
     AddEditContactComponent,
     ListContactsComponent,
     MsgConfComponent,
-    NavbarComponent
+    NavbarComponent,
+    DetailedViewComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    AngularMaterialModule
+    AngularMaterialModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
     provideClientHydration(),
