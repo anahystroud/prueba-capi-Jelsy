@@ -4,70 +4,117 @@
         <div class="col-lg-12">
             <mat-card appearance="outlined">
                 <mat-card-content>
-                    <h5 style="text-align: center;">Formulario: {{ accion }} contacto</h5>
+                    <h5 class="text-center">Formulario: {{ accion }} contacto</h5>
                     <br>
                     <form [formGroup]="myForm" autocomplete="off">
-                        <div class="col-lg-12">
-                            <mat-form-field appearance="outline" class="example-container" [style.fontSize.px]=16>
-                                <mat-label>Nombre completo</mat-label>
-                                <input matInput formControlName="nombreCompleto">
-                            </mat-form-field>
-                            <div *ngIf="myForm.get('nombreCompleto').hasError('required') && myForm.get('nombreCompleto').touched" style="margin-top: -20px;">
-                                <span class="mda-form-msg">* Campo <strong>requerido</strong></span>
-                            </div>
-                            <div *ngIf="myForm.get('nombreCompleto').hasError('maxlength') && myForm.get('nombreCompleto').touched" style="margin-top: -20px;">
-                                <span class="mda-form-msg">* El campo debe tener como máximo <strong>25 caracteres</strong></span>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <mat-form-field appearance="outline" class="example-container" [style.fontSize.px]=16>
-                                    <mat-label>Teléfono</mat-label>
-                                    <input matInput formControlName="telefono">
-                                </mat-form-field>
+                      <div class="col-12 mb-3">
+                          <mat-form-field appearance="outline" class="example-container" [style.fontSize.px]=16>
+                              <mat-label>Nombre completo</mat-label>
+                              <input matInput formControlName="name">
+                          </mat-form-field>
+                          <div *ngIf="myForm.get('name').hasError('required') && myForm.get('name').touched" style="margin-top: -20px;">
+                              <span class="mda-form-msg">* Campo <strong>requerido</strong></span>
+                          </div>
+                          <div *ngIf="myForm.get('name').hasError('maxlength') && myForm.get('name').touched" style="margin-top: -20px;">
+                              <span class="mda-form-msg">* El campo debe tener como máximo <strong>25 caracteres</strong></span>
+                          </div>
+                      </div>
 
-                                <div *ngIf="myForm.get('telefono').hasError('required') && myForm.get('telefono').touched" style="margin-top: -20px;">
-                                    <span class="mda-form-msg">* Campo <strong>requerido</strong></span>
-                                </div>
-                                <div *ngIf="myForm.get('telefono').hasError('maxlength') || myForm.get('telefono').hasError('minlength') && myForm.get('telefono').touched" style="margin-top: -20px;">
-                                    <span class="mda-form-msg">* El campo debe tener <strong>10 caracteres</strong></span>
-                                </div>
-                            </div>
-    
-                            <div class="col-lg-6">
-                                <mat-form-field appearance="outline" class="example-container" [style.fontSize.px]=16>
-                                    <mat-label>Email</mat-label>
-                                    <input matInput placeholder="Ex. correo@google.com" formControlName="email">
-                                </mat-form-field>
+                      <div class="col-12 mb-3">
+                        <mat-form-field class="chip-list" appearance="outline" [style.fontSize.px]=16>
+                          <mat-label>Teléfono(s)</mat-label>
+                          <mat-chip-grid #chipGrid formArrayName="telefonos">
+                            @for (tel of getControls(myForm, 'telefonos'); track tel) {
+                              <mat-chip-row
+                                (removed)="remove(myForm, tel, 'telefonos')"
+                                [editable]="true"
+                                (edited)="edit(tel, $event, myForm, 'telefonos')"
+                                [aria-description]="'press enter to edit ' + tel.value"
+                              >
+                                {{tel.value}}
+                                <button matChipRemove [attr.aria-label]="'remove ' + tel.value">
+                                  <mat-icon>cancel</mat-icon>
+                                </button>
+                              </mat-chip-row>
+                            }
+                            <input
+                              [matChipInputFor]="chipGrid"
+                              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                              [matChipInputAddOnBlur]="addOnBlur"
+                              (matChipInputTokenEnd)="add($event, myForm, 'telefonos')"
+                            />
+                          </mat-chip-grid>
+                        </mat-form-field>
+                        <div *ngIf="myForm.get('telefonos').hasError('required') || myForm.get('telefonos').invalid" style="margin-top: -20px;">
+                          <span class="mda-form-msg">* Campo <strong>requerido</strong></span>
+                        </div>
+                      </div>
 
-                                <div *ngIf="myForm.get('email').hasError('required') && myForm.get('email').touched" style="margin-top: -20px;">
-                                    <span class="mda-form-msg">* Campo <strong>requerido</strong></span>
-                                </div>
-                                <div *ngIf="myForm.get('email').hasError('email') && myForm.get('email').touched" style="margin-top: -20px;">
-                                    <span class="mda-form-msg">Formato de correo <strong>inválido</strong></span>
-                                </div>
-                            </div>
+                      <div class="col-12 mb-3">
+                        <mat-form-field class="chip-list" appearance="outline" [style.fontSize.px]=16>
+                          <mat-label>Correo(s)</mat-label>
+                          <mat-chip-grid #chipGridEmail formArrayName="emails">
+                            @for (tel of getControls(myForm, 'emails'); track tel) {
+                              <mat-chip-row
+                                (removed)="remove(myForm, tel, 'emails')"
+                                [editable]="true"
+                                (edited)="edit(tel, $event, myForm, 'emails')"
+                                [aria-description]="'press enter to edit ' + tel.value"
+                              >
+                                {{tel.value}}
+                                <button matChipRemove [attr.aria-label]="'remove ' + tel.value">
+                                  <mat-icon>cancel</mat-icon>
+                                </button>
+                              </mat-chip-row>
+                            }
+                            <input
+                              [matChipInputFor]="chipGridEmail"
+                              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                              [matChipInputAddOnBlur]="addOnBlur"
+                              (matChipInputTokenEnd)="add($event, myForm, 'emails')"
+                            />
+                          </mat-chip-grid>
+                        </mat-form-field>
+                        <div *ngIf="myForm.get('emails').hasError('required') || myForm.get('emails').invalid" style="margin-top: -20px;">
+                          <span class="mda-form-msg">* Campo <strong>requerido</strong></span>
                         </div>
-        
-                        <div class="col-lg-12">
-                            <mat-form-field appearance="outline" class="example-container" [style.fontSize.px]=16>
-                                <mat-label>Dirección</mat-label>
-                                <input matInput formControlName="direccion">
-                            </mat-form-field>
+                      </div>
 
-                            <div *ngIf="myForm.get('direccion').hasError('required') && myForm.get('direccion').touched" style="margin-top: -20px;">
-                                <span class="mda-form-msg">* Campo <strong>requerido</strong></span>
-                            </div>
-                            <div *ngIf="myForm.get('direccion').hasError('maxlength') && myForm.get('direccion').touched" style="margin-top: -20px;">
-                                <span class="mda-form-msg">* El campo debe tener como máximo <strong>100 caracteres</strong></span>
-                            </div>
+                      <div class="col-12 mb-3">
+                        <mat-form-field class="chip-list" appearance="outline" [style.fontSize.px]=16>
+                          <mat-label>Direccion(es)</mat-label>
+                          <mat-chip-grid #chipGridDirs formArrayName="direcciones">
+                            @for (tel of getControls(myForm, 'direcciones'); track tel) {
+                              <mat-chip-row
+                                (removed)="remove(myForm, tel, 'direcciones')"
+                                [editable]="true"
+                                (edited)="edit(tel, $event, myForm, 'direcciones')"
+                                [aria-description]="'press enter to edit ' + tel.value"
+                              >
+                                {{tel.value}}
+                                <button matChipRemove [attr.aria-label]="'remove ' + tel.value">
+                                  <mat-icon>cancel</mat-icon>
+                                </button>
+                              </mat-chip-row>
+                            }
+                            <input
+                              [matChipInputFor]="chipGridDirs"
+                              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                              [matChipInputAddOnBlur]="addOnBlur"
+                              (matChipInputTokenEnd)="add($event, myForm, 'direcciones')"
+                            />
+                          </mat-chip-grid>
+                        </mat-form-field>
+                        <div *ngIf="myForm.get('direcciones').hasError('required') || myForm.get('direcciones').invalid" style="margin-top: -20px;">
+                          <span class="mda-form-msg">* Campo <strong>requerido</strong></span>
                         </div>
-        
-                        <div class="col-lg-12" style="text-align: center">
-                            <button type="button" class="btn btn-success btn-lg float-right" [disabled]="myForm.invalid" (click)="guardarContacto()">Guardar</button>
-                            <button type="button" class="btn btn-secondary btn-lg float-right" style="margin-left: 20px;" routerLink="/">Cancelar</button>
-                        </div>
+                      </div>
+
+                      <div class="col-12 text-center">
+                        <button mat-raised-button type="button" class="btn btn-success btn-lg float-right" [disabled]="myForm.invalid" (click)="guardarContacto()">Guardar</button>
+                        <button mat-raised-button type="button" class="btn btn-secondary btn-lg float-right" style="margin-left: 20px;" routerLink="/">Cancelar</button>
+                      </div>
                     </form>
                 </mat-card-content>
             </mat-card>

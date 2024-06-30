@@ -12,6 +12,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatCardModule} from '@angular/material/card';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [],
@@ -27,7 +28,8 @@ import {MatCardModule} from '@angular/material/card';
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatCardModule
+    MatCardModule,
+    MatChipsModule
   ],
   exports: [
     MatSlideToggleModule,
@@ -40,7 +42,8 @@ import {MatCardModule} from '@angular/material/card';
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatCardModule
+    MatCardModule,
+    MatChipsModule
   ],
 
 })

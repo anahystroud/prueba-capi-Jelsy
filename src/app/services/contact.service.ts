@@ -11,76 +11,39 @@ import { Observable } from 'rxjs';
 export class ContactService {
 
   public url: string;
-
-
-  listContact: Contact[] = [
-    { 
-      nombreCompleto: 'Israel Torres',
-      telefono: '7773416895', 
-      email: 'israel.tg@gmail.com', 
-      direccion: 'Cuautla Morelos' 
-    },
-    { 
-      nombreCompleto: 'Jelsy Uribe',
-      telefono: '775502182', 
-      email: 'anahystroud@gmail.com', 
-      direccion: 'Zacatepec Morelos' 
-    },
-    { 
-      nombreCompleto: 'Crystal Uribe',
-      telefono: '775502182', 
-      email: 'anahystroud@gmail.com', 
-      direccion: 'Zacatepec Morelos' 
-    },
-    { 
-      nombreCompleto: 'Leon Israel Torres Uribe',
-      telefono: '775502182', 
-      email: 'anahystroud@gmail.com', 
-      direccion: 'Zacatepec Morelos' 
-    },
-    { 
-      nombreCompleto: 'Katerine Uribe',
-      telefono: '775502182', 
-      email: 'anahystroud@gmail.com', 
-      direccion: 'Zacatepec Morelos' 
-    },
-    { 
-      nombreCompleto: 'Rosaura Rocio Rivero P.',
-      telefono: '775502182', 
-      email: 'anahystroud@gmail.com', 
-      direccion: 'Zacatepec Morelos' 
-    }
-
-  ];
+  public cont: string;
   httpClient: any;
 
+
   constructor(private _http:HttpClient) {
-    this.url = "https://jsonplaceholder.typicode.com/posts";
+    // this.url = "https://jsonplaceholder.typicode.com/posts";
+    this.url = "http://api-capi-jelsy.test/api/v1/contactos";
   }
 
-  getContacts(){
-    return this.listContact.slice();
-
-    // return this.httpClient.get(this.url).map((res: { json: () => any; }) => res.json());
-
+  getContacts() {
+    return this._http.get(this.url);
+    // return this.listContact.slice();
   }
 
   eliminarContacto(index: number){
-    this.listContact.splice(index, 1);
+    // this.listContact.splice(index, 1);
   }
 
   agregarContacto(contact: Contact){
-    this.listContact.unshift(contact);
+    // this.listContact.unshift(contact);
   }
 
   getContacto(index: number){
-    return this.listContact[index];
+    console.log(index);
+    return this._http.get(this.url+'/edit/'+index+'');
+
+    // return this.listContact[index];
   }
 
   editarContacto(contacto: Contact, idContacto: number){
-    this.listContact[idContacto].nombreCompleto = contacto.nombreCompleto;
-    this.listContact[idContacto].telefono = contacto.telefono;
-    this.listContact[idContacto].email = contacto.email;
-    this.listContact[idContacto].direccion = contacto.direccion;
+    // this.getContacto(idContacto).name = contacto.name;
+    // this.getContacto(idContacto).telefonos = contacto.telefonos;
+    // this.getContacto(idContacto).emails = contacto.emails;
+    // this.getContacto(idContacto).direcciones = contacto.direcciones;
   }
 }

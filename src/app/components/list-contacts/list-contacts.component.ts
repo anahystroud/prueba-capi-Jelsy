@@ -21,9 +21,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 
 export class ListContactsComponent implements OnInit{
-  displayedColumns: string[] = ['nombreCompleto', 'telefono', 'email', 'direccion', 'acciones'];
+  displayedColumns: string[] = ['name', 'telefonos', 'emails', 'direcciones', 'acciones'];
   listContacto: Contact[];
   dataSource = new MatTableDataSource<Contact>();
+
+  contactos: any;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
@@ -42,10 +44,15 @@ export class ListContactsComponent implements OnInit{
 
   }
 
-  cargarContactos(){
-    this.listContacto = this.contactService.getContacts();
-    this.dataSource = new MatTableDataSource(this.listContacto);
-    this.dataSource.paginator = this.paginator;
+  cargarContactos() {
+    this.contactService.getContacts().subscribe(
+      data => {
+        this.contactos = data;
+        console.log(data);
+        this.dataSource = new MatTableDataSource(this.contactos);
+        this.dataSource.paginator = this.paginator;
+      }
+    );
   }
 
   eliminarContacto(index: number){

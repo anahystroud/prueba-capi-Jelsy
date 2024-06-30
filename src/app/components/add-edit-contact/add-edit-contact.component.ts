@@ -1,53 +1,118 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {Component} from '@angular/core';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {MatChipEditedEvent, MatChipInputEvent, MatChipGrid } from '@angular/material/chips';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray, ValidationErrors, AbstractControl } from '@angular/forms';
 import { Contact } from '../../models/contact';
 import { ContactService } from '../../services/contact.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
 
 @Component({
   selector: 'app-add-edit-contact',
   templateUrl: './add-edit-contact.component.html',
   styleUrl: './add-edit-contact.component.css'
 })
+
 export class AddEditContactComponent {
+  // @ViewChild('chipGrid') chipGrid: MatChipGrid;
+  chipGrid: MatChipGrid;
   emailFormControl: any;
   idContacto: any;
   accion = 'Crear';
   myForm: FormGroup;
+  contact: any;
 
-  constructor(private fb: FormBuilder, 
+  readonly addOnBlur = true;
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
+  constructor(
+    private fb: FormBuilder, 
     private contactService: ContactService,
     private route: Router,
     private snackBar: MatSnackBar,
     private aRoute: ActivatedRoute
+  ) {
 
-  ){
     this.myForm = this.fb.group ({
-      nombreCompleto: ['', [Validators.required, Validators.maxLength(25)]],
-      telefono: ['', [Validators.required, Validators.maxLength(10), Validators.minLength(10)]],
-      email: ['',[Validators.required, Validators.email]],
-      direccion: ['', [Validators.required, Validators.maxLength(100)]],
+      name: ['', [Validators.required, Validators.maxLength(125)]],
+      telefonos: this.fb.array([], [this.tagValidatorRequired]),
+      emails: this.fb.array([], [this.tagValidatorRequired]),
+      direcciones: this.fb.array([], [this.tagValidatorRequired])
     });
 
     this.idContacto = this.aRoute.snapshot.params['id'];
   }
 
+
   ngOnInit(): void {
-    if(this.idContacto !== undefined){
+    if (this.idContacto !== undefined) {
       this.accion = 'Editar';
       this.esEditar();
     }
   }
 
+  initItem(name: string): FormControl {
+    return this.fb.control(name);
+  }
+
+
+  tagValidatorRequired(control: AbstractControl): ValidationErrors | null {
+    return (control.value && control.value.length === 0)
+      ? { required: true }
+      : null;
+  };
+
+
+  getControls(form: FormGroup, name: string) {
+    return (form.get(name) as FormArray).controls;
+  }
+
+
+  add(event: MatChipInputEvent, form: FormGroup, name: string): void {
+    const input = event.input;
+    const value = event.value;
+
+    if ((value || '').trim()) {
+      const control = form.get(name) as FormArray;
+      control.push(this.initItem(value.trim()));
+    }
+
+    if (input) {
+      input.value = '';
+    }
+  }
+
+
+  remove(form: FormGroup, element: any, name: string) {
+    const index = (<FormArray>form.get(name)).controls.findIndex(x => x.value === element.value);
+
+    (<FormArray>form.get(name)).removeAt(index);
+  }
+
+
+  edit(element: any, event: MatChipEditedEvent, form: FormGroup, name: string) {
+    const value = event.value.trim();
+  
+    if (!value) {
+      this.remove(form, element, name);
+      return;
+    }
+
+    const index = (<FormArray>form.get(name)).controls.findIndex(x => x.value === element.value);
+
+    if (index >= 0) {
+      (<FormArray>form.get(name)).at(index).patchValue(value);
+    }
+  }
+
+
   guardarContacto(){
     console.log(this.myForm);
     const contacto: Contact = {
-      nombreCompleto: this.myForm.get('nombreCompleto').value,
-      telefono: this.myForm.get('telefono').value,
-      email: this.myForm.get('email').value,
-      direccion: this.myForm.get('direccion').value
+      name: this.myForm.get('name').value,
+      telefonos: this.myForm.get('telefonos').value,
+      emails: this.myForm.get('emails').value,
+      direcciones: this.myForm.get('direcciones').value
     };
 
     if(this.idContacto !== undefined){
@@ -74,15 +139,33 @@ export class AddEditContactComponent {
     this.route.navigate(['/']);
   }
 
-  esEditar(){
-    const contacto: Contact = this.contactService.getContacto(this.idContacto);
-    console.log(contacto);
-    this.myForm.patchValue({
-      nombreCompleto: contacto.nombreCompleto,
-      telefono: contacto.telefono,
-      email: contacto.email,
-      direccion: contacto.direccion
-    });
+  esEditar() {
+
+    this.contactService.getContacto(this.idContacto).subscribe(
+      data => {
+        this.contact = data;
+        this.contact.telefonos.forEach( (value: any) => {
+          const control = this.myForm.get('telefonos') as FormArray;
+          control.push(this.initItem(value.telefono));
+        });
+        this.contact.emails.forEach( (value: any) => {
+          const control = this.myForm.get('emails') as FormArray;
+          control.push(this.initItem(value.email));
+        });
+        this.contact.direcciones.forEach( (value: any) => {
+          const control = this.myForm.get('direcciones') as FormArray;
+          control.push(this.initItem(value.direccion));
+        });
+
+        this.myForm.patchValue({
+          name: this.contact.name,
+          // telefonos: this.contact.telefonos,
+          // emails: this.contact.emails,
+          // direcciones: this.contact.direcciones
+        });
+        
+      }
+    );
   }
 
 }
