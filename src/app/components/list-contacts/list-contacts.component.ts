@@ -55,6 +55,7 @@ export class ListContactsComponent implements OnInit{
 
   ngAfterViewInit() {
     this.cargarContactos();
+    this.cargarContactos();
   }
 
   applyFilter(event: Event) {
