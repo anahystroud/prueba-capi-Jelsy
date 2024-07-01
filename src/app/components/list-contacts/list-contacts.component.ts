@@ -39,7 +39,7 @@ export class ListContactsComponent implements OnInit{
   ){ }
 
   ngOnInit(): void {
-    // 
+    //
   }
 
   isLoading = false;
@@ -117,9 +117,10 @@ export class ListContactsComponent implements OnInit{
         this.snackBar.open('El contacto se eliminó correctamente.', '', {
           duration: 3000
         });
-
-        this.route.navigate(['/']);
+        this.cargarContactos();
       }
+
+      
       
     });
    

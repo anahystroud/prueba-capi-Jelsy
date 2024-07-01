@@ -73,7 +73,7 @@ export class AddEditContactComponent {
     const value = event.value;
 
     if ((value || '').trim()) {
-      let evaluator = this.matchStr(value, name);
+      let evaluator = this.matchStr(value, name );
       if ( evaluator ) {
         const control = form.get(name) as FormArray;
         control.push(this.initItem(value.trim()));
@@ -160,6 +160,7 @@ export class AddEditContactComponent {
       duration: 3000
     });
     this.route.navigate(['/']);
+
   }
 
   esEditar() {
