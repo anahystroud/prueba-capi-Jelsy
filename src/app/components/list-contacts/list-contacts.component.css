@@ -11,3 +11,10 @@ table {
   .pointer{
     cursor: pointer;
   }
+
+  .mat-column-name {
+    width: 150px;
+    border-right: 1px solid currentColor;
+    /* padding-right: 24px; */
+    text-align: center;
+  }

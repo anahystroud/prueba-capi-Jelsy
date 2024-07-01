@@ -33,8 +33,8 @@ export class AddEditContactComponent {
     private aRoute: ActivatedRoute
   ) {
 
-    this.myForm = this.fb.group ({
-      name: ['', [Validators.required, Validators.maxLength(125)]],
+    this.myForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(40)]],
       telefonos: this.fb.array([], [this.tagValidatorRequired]),
       emails: this.fb.array([], [this.tagValidatorRequired]),
       direcciones: this.fb.array([], [this.tagValidatorRequired])
@@ -73,8 +73,11 @@ export class AddEditContactComponent {
     const value = event.value;
 
     if ((value || '').trim()) {
-      const control = form.get(name) as FormArray;
-      control.push(this.initItem(value.trim()));
+      let evaluator = this.matchStr(value, name);
+      if ( evaluator ) {
+        const control = form.get(name) as FormArray;
+        control.push(this.initItem(value.trim()));
+      }
     }
 
     if (input) {
@@ -106,8 +109,28 @@ export class AddEditContactComponent {
   }
 
 
-  guardarContacto(){
-    console.log(this.myForm);
+  matchStr(str: string, aux: string = null): any {
+    switch(aux) {
+      case 'telefonos': {
+        const reg = new RegExp(/^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/);
+        return reg.test(str);
+        break; 
+      }
+      case 'emails': { 
+        const reg = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
+        return reg.test(str);
+        break;
+      } 
+      default: { 
+        return true;
+        break; 
+      } 
+   }
+  }
+
+
+
+  guardarContacto() {
     const contacto: Contact = {
       name: this.myForm.get('name').value,
       telefonos: this.myForm.get('telefonos').value,
@@ -115,15 +138,15 @@ export class AddEditContactComponent {
       direcciones: this.myForm.get('direcciones').value
     };
 
-    if(this.idContacto !== undefined){
+    if (this.idContacto !== undefined) {
       this.editarContacto(contacto);
-    }else{
+    }
+    else {
       this.agregarContacto(contacto);
     }
-  
   }
 
-  agregarContacto(contacto: Contact){
+  agregarContacto(contacto: Contact) {
     this.contactService.agregarContacto(contacto);
     this.snackBar.open('El contacto se almacenó correctamente.', '', {
       duration: 3000
@@ -140,7 +163,6 @@ export class AddEditContactComponent {
   }
 
   esEditar() {
-
     this.contactService.getContacto(this.idContacto).subscribe(
       data => {
         this.contact = data;
@@ -156,14 +178,9 @@ export class AddEditContactComponent {
           const control = this.myForm.get('direcciones') as FormArray;
           control.push(this.initItem(value.direccion));
         });
-
         this.myForm.patchValue({
-          name: this.contact.name,
-          // telefonos: this.contact.telefonos,
-          // emails: this.contact.emails,
-          // direcciones: this.contact.direcciones
+          name: this.contact.name
         });
-        
       }
     );
   }

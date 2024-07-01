@@ -10,6 +10,7 @@ import { ListContactsComponent } from './components/list-contacts/list-contacts.
 import { MsgConfComponent } from './components/shared/msg-conf/msg-conf.component';
 import { AngularMaterialModule } from './components/shared/angular-material/angular-material.module';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { DetailedViewComponent } from './components/detailed-view/detailed-view.component';
@@ -31,7 +32,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     AngularMaterialModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatProgressBarModule
   ],
   providers: [
     provideClientHydration(),
