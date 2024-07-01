@@ -159,6 +159,7 @@ export class AddEditContactComponent {
     this.snackBar.open('El contacto se actualizó correctamente.', '', {
       duration: 3000
     });
+  
     this.route.navigate(['/']);
 
   }
